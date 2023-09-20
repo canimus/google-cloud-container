@@ -29,7 +29,7 @@ RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
 RUN tar -zxvf hadoop-3.3.6.tar.gz --directory /hadoop
 
 ENV HADOOP_HOME=/hadoop/hadoop-3.3.6
-ENV HADOOP_COMMON_LIB_NATIVE_DIR=/hadoop/hadoop=3.3.6/lib/native
+ENV HADOOP_COMMON_LIB_NATIVE_DIR=/hadoop/hadoop-3.3.6/lib/native
 ENV LD_LIBRARY_PATH=/hadoop/hadoop-3.3.6/lib/native
 RUN rm -rf /var/lib/apt/lists/*
 RUN rm -rf /usr/src/*
