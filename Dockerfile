@@ -8,7 +8,7 @@ RUN python -m venv .venv
 RUN pip install --upgrade pip
 RUN pip install wheel setuptools
 RUN pip install ipython matplotlib seaborn scikit-learn pandas==1.5.3 numpy pyspark==3.4.1 cuallee pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs duckdb fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk
-RUN pip install xgboost phonenumbers pendulum duckdb-engine jupysql nbconvert[webpdf] jupyterlab_horizon_theme 
+RUN pip install xgboost phonenumbers pendulum duckdb-engine jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates
 RUN rm -rf /home/root/.cache
 
 RUN mkdir -p /worker
@@ -31,7 +31,9 @@ RUN mkdir -p /conf
 RUN mkdir -p /scripts
 
 COPY log4j.properties /conf/log4j.properties
-COPY sparker.py /scripts/sparker.py
+COPY sparker.ipynb /scripts/sparker.ipynb
+RUN mkdir -p /root/.jupyter
+COPY jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
 RUN wget https://github.com/GoogleCloudDataproc/spark-bigquery-connector/releases/download/0.32.2/spark-bigquery-with-dependencies_2.12-0.32.2.jar -P /libs
 RUN wget https://github.com/GoogleCloudDataproc/hadoop-connectors/releases/download/v2.2.17/gcs-connector-hadoop3-2.2.17-shaded.jar -P /libs
