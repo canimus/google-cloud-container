@@ -8,7 +8,7 @@ RUN python -m venv .venv
 RUN pip install --upgrade pip
 RUN pip install wheel setuptools
 RUN pip install ipython matplotlib seaborn scikit-learn pandas==1.5.3 numpy pyspark==3.4.1 cuallee pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs duckdb fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk
-RUN pip install xgboost phonenumbers pendulum duckdb-engine jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab
+RUN pip install xgboost phonenumbers pendulum duckdb-engine jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml
 RUN rm -rf /home/root/.cache
 
 RUN mkdir -p /worker
