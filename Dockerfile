@@ -1,14 +1,14 @@
-FROM python:3.11.3-slim
+FROM python:3.11-slim
 ENV PIP_ROOT_USER_ACTION=ignore
 WORKDIR /usr/src
 RUN apt-get update -y
-RUN apt-get install openjdk-11-jdk zstd texlive-xetex texlive-fonts-recommended texlive-plain-generic pandoc wget procps -y
+RUN apt-get install openjdk-17-jdk zstd texlive-xetex ffmpeg texlive-fonts-recommended texlive-plain-generic pandoc wget procps libgomp1 -y
 
 RUN python -m venv .venv
 RUN pip install --upgrade pip
 RUN pip install wheel setuptools
-RUN pip install ipython matplotlib seaborn scikit-learn pandas==1.5.3 numpy pyspark==3.4.1 cuallee==0.6.0 pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs duckdb fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk
-RUN pip install xgboost phonenumbers pendulum duckdb-engine jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml
+RUN pip install ipython matplotlib seaborn scikit-learn pandas==1.5.3 numpy pyspark==3.4.1 cuallee==0.6.1 pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs duckdb fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk
+RUN pip install xgboost phonenumbers pendulum duckdb-engine jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml rustworkx clickhouse_sqlalchemy qrcode torch qdrant-client sentence-transformers transformers 
 RUN rm -rf /home/root/.cache
 
 RUN mkdir -p /worker
@@ -22,6 +22,8 @@ RUN wget https://github.com/GoogleCloudDataproc/spark-bigquery-connector/release
 RUN wget https://github.com/GoogleCloudDataproc/hadoop-connectors/releases/download/v2.2.17/gcs-connector-hadoop3-2.2.17-shaded.jar -P /libs
 RUN wget https://repo1.maven.org/maven2/io/delta/delta-core_2.12/2.4.0/delta-core_2.12-2.4.0.jar -P /libs
 RUN wget https://repo1.maven.org/maven2/io/delta/delta-storage/2.4.0/delta-storage-2.4.0.jar -P /libs
+RUN wget https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-core/1.4.2/iceberg-core-1.4.2.jar -P /libs
+RUN wget https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-3.4_2.12/1.4.2/iceberg-spark-runtime-3.4_2.12-1.4.2.jar -P /libs
 
 RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
@@ -43,6 +45,7 @@ RUN rm -rf /usr/local/lib/python3.11/site-packages/jupyterlab_templates/extensio
 RUN rm -rf /usr/local/lib/python3.11/site-packages/jupyterlab_templates/templates/jupyterlab_templates/*.ipynb
 COPY sparker.ipynb /usr/local/lib/python3.11/site-packages/jupyterlab_templates/extension/notebook_templates/jupyterlab_templates/sparker.ipynb
 COPY sparker.ipynb /usr/local/lib/python3.11/site-packages/jupyterlab_templates/templates/jupyterlab_templates/sparker.ipynb
+#COPY sparker.ipynb /root/.jupyter/templates/notebooks/sparker.ipynb
 COPY jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
 
