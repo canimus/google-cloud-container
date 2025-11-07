@@ -8,8 +8,8 @@ RUN python -m venv .venv
 RUN pip install --upgrade pip
 RUN pip install wheel setuptools
 RUN pip install ipython matplotlib seaborn scikit-learn pandas polars numpy pyspark cuallee pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk \
-                xgboost phonenumbers pendulum jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml nltk rustworkx geopy folium svgutils pycairo geopandas geodatasets
-                qrcode folium geopy svgutils fastavro avro \
+                xgboost phonenumbers pendulum jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml nltk rustworkx geopy folium svgutils pycairo geopandas geodatasets \
+                qrcode folium geopy svgutils fastavro avro grpcio grpcio-status \
                 duckdb duckdb-engine && rm -rf /home/root/.cache
 
 RUN mkdir -p /datalake
