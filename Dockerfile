@@ -2,7 +2,7 @@ FROM python:3.12
 ENV PIP_ROOT_USER_ACTION=ignore
 WORKDIR /usr/src
 RUN apt-get update -y
-RUN apt-get install gcc python3-dev openjdk-17-jdk zstd texlive-xetex texlive-fonts-recommended texlive-plain-generic pandoc wget procps libgdal-dev -y
+RUN apt-get install gcc python3-dev openjdk-21-jdk zstd texlive-xetex texlive-fonts-recommended texlive-plain-generic pandoc wget procps libgdal-dev -y
 
 RUN python -m venv .venv
 RUN pip install --upgrade pip
@@ -21,11 +21,11 @@ VOLUME /worker
 VOLUME /package
 
 RUN mkdir -p /libs
-RUN wget https://github.com/GoogleCloudDataproc/spark-bigquery-connector/releases/download/0.35.1/spark-bigquery-with-dependencies_2.12-0.35.1.jar -P /libs
-RUN wget https://github.com/GoogleCloudDataproc/hadoop-connectors/releases/download/v2.2.19/gcs-connector-hadoop3-2.2.19-shaded.jar -P /libs
-RUN wget https://repo1.maven.org/maven2/io/delta/delta-spark_2.12/3.0.0/delta-spark_2.12-3.0.0.jar -P /libs
-RUN wget https://repo1.maven.org/maven2/io/delta/delta-storage/3.0.0/delta-storage-3.0.0.jar -P /libs
-RUN wget https://repo1.maven.org/maven2/org/apache/spark/spark-avro_2.12/3.5.0/spark-avro_2.12-3.5.0.jar -P /libs
+RUN wget https://github.com/GoogleCloudDataproc/spark-bigquery-connector/releases/download/0.43.1/spark-bigquery-with-dependencies_2.13-0.43.1.jar -P /libs
+RUN wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop3-latest.jar -P /libs
+RUN wget https://repo1.maven.org/maven2/io/delta/delta-spark_2.13/4.0.0/delta-spark_2.13-4.0.0.jar -P /libs
+RUN wget https://repo1.maven.org/maven2/io/delta/delta-storage/4.0.0/delta-storage-4.0.0.jar -P /libs
+RUN wget https://repo1.maven.org/maven2/org/apache/spark/spark-avro_2.13/4.0.1/spark-avro_2.13-4.0.1.jar -P /libs
 
 RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
@@ -51,5 +51,8 @@ COPY jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
 
 EXPOSE 8888
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-CMD ["jupyter", "lab", "--ip", "0.0.0.0", "--allow-root", "--NotebookApp.token=password"]
+# Keep the CMD the same (shell form)
+ENTRYPOINT ["/entrypoint.sh"]
