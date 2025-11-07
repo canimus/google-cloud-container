@@ -7,18 +7,14 @@ RUN apt-get install gcc python3-dev openjdk-21-jdk zstd texlive-xetex texlive-fo
 RUN python -m venv .venv
 RUN pip install --upgrade pip
 RUN pip install wheel setuptools
-RUN pip install ipython matplotlib seaborn scikit-learn pandas polars numpy pyspark cuallee pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk
-RUN pip install xgboost phonenumbers pendulum jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml nltk rustworkx geopy folium svgutils pycairo geopandas geodatasets
-RUN pip install qrcode folium geopy svgutils fastavro avro
-RUN pip install duckdb --pre
-RUN pip install duckdb-engine
-RUN rm -rf /home/root/.cache
+RUN pip install ipython matplotlib seaborn scikit-learn pandas polars numpy pyspark cuallee pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk \
+                xgboost phonenumbers pendulum jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml nltk rustworkx geopy folium svgutils pycairo geopandas geodatasets
+                qrcode folium geopy svgutils fastavro avro \
+                duckdb duckdb-engine && rm -rf /home/root/.cache
 
-RUN mkdir -p /worker
-RUN mkdir -p /package
+RUN mkdir -p /datalake
 RUN mkdir -p /hadoop
-VOLUME /worker
-VOLUME /package
+VOLUME /datalake
 
 RUN mkdir -p /libs
 RUN wget https://github.com/GoogleCloudDataproc/spark-bigquery-connector/releases/download/0.43.1/spark-bigquery-with-dependencies_2.13-0.43.1.jar -P /libs
@@ -29,12 +25,14 @@ RUN wget https://repo1.maven.org/maven2/org/apache/spark/spark-avro_2.13/4.0.1/s
 
 RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
-RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
-RUN tar -zxvf hadoop-3.3.6.tar.gz --directory /hadoop
+#RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+#RUN tar -zxvf hadoop-3.3.6.tar.gz --directory /hadoop
+RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.2/hadoop-3.4.2-lean.tar.gz
+RUN tar -zxvf hadoop-3.4.2-lean.tar.gz --directory /hadoop
 
-ENV HADOOP_HOME=/hadoop/hadoop-3.3.6
-ENV HADOOP_COMMON_LIB_NATIVE_DIR=/hadoop/hadoop-3.3.6/lib/native
-ENV LD_LIBRARY_PATH=/hadoop/hadoop-3.3.6/lib/native
+ENV HADOOP_HOME=/hadoop/hadoop-3.4.2-lean
+ENV HADOOP_COMMON_LIB_NATIVE_DIR=/hadoop/hadoop-3.4.2-lean/lib/native
+ENV LD_LIBRARY_PATH=/hadoop/hadoop-3.4.2-lean/lib/native
 RUN rm -rf /var/lib/apt/lists/*
 RUN rm -rf /usr/src/*
 
