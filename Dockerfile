@@ -9,12 +9,9 @@ RUN pip install --upgrade pip
 RUN pip install wheel setuptools
 RUN pip install ipython matplotlib seaborn scikit-learn pandas polars numpy pyspark cuallee pyarrow fastparquet deltalake jupyterlab ipywidgets statsmodels delta-spark simple-salesforce imbalanced-learn gcsfs fpdf2 spark-nlp pychalk sqlglot squarify pywaffle networkx plotly inflection humanize pikepdf adtk \
                 xgboost phonenumbers pendulum jupysql nbconvert[webpdf] jupyterlab_horizon_theme jupyterlab_templates catppuccin-jupyterlab toml nltk rustworkx geopy folium svgutils pycairo geopandas geodatasets \
-                qrcode folium geopy svgutils fastavro avro grpcio grpcio-status \
+                qrcode folium geopy svgutils fastavro avro grpcio grpcio-status graphframes-py \
                 duckdb duckdb-engine && rm -rf /home/root/.cache
 
-RUN mkdir -p /datalake
-RUN mkdir -p /hadoop
-VOLUME /datalake
 
 RUN mkdir -p /libs
 RUN wget https://github.com/GoogleCloudDataproc/spark-bigquery-connector/releases/download/0.43.1/spark-bigquery-with-dependencies_2.13-0.43.1.jar -P /libs
@@ -22,11 +19,13 @@ RUN wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop3-lat
 RUN wget https://repo1.maven.org/maven2/io/delta/delta-spark_2.13/4.0.0/delta-spark_2.13-4.0.0.jar -P /libs
 RUN wget https://repo1.maven.org/maven2/io/delta/delta-storage/4.0.0/delta-storage-4.0.0.jar -P /libs
 RUN wget https://repo1.maven.org/maven2/org/apache/spark/spark-avro_2.13/4.0.1/spark-avro_2.13-4.0.1.jar -P /libs
+RUN wget https://repo1.maven.org/maven2/io/graphframes/graphframes-spark4_2.13/0.10.0/graphframes-spark4_2.13-0.10.0.jar -P /libs
+RUN wget https://repo1.maven.org/maven2/org/apache/spark/spark-graphx_2.13/4.0.1/spark-graphx_2.13-4.0.1.jar -P /libs
+
 
 RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
-#RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
-#RUN tar -zxvf hadoop-3.3.6.tar.gz --directory /hadoop
+RUN mkdir -p /hadoop
 RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.2/hadoop-3.4.2-lean.tar.gz
 RUN tar -zxvf hadoop-3.4.2-lean.tar.gz --directory /hadoop
 
@@ -38,19 +37,28 @@ RUN rm -rf /usr/src/*
 
 RUN mkdir -p /conf
 COPY log4j.properties /conf/log4j.properties
+# Set Spark configuration directory
+ENV SPARK_CONF_DIR=/conf
+COPY spark-defaults.conf /conf/spark-defaults.conf
 
 RUN mkdir -p /root/.jupyter/templates/notebooks
 RUN rm -rf /usr/local/share/jupyter/notebook/jupyterlab_templates/*.ipynb
 RUN rm -rf /usr/local/lib/python3.12/site-packages/jupyterlab_templates/extension/notebook_templates/jupyterlab_templates/*.ipynb
 RUN rm -rf /usr/local/lib/python3.12/site-packages/jupyterlab_templates/templates/jupyterlab_templates/*.ipynb
 COPY sparker.ipynb /usr/local/lib/python3.12/site-packages/jupyterlab_templates/extension/notebook_templates/jupyterlab_templates/sparker.ipynb
-COPY sparker.ipynb /usr/local/lib/python3.12/site-packages/jupyterlab_templates/templates/jupyterlab_templates/sparker.ipynb
+COPY sparker.ipynb /usr/local/lib/python3.12/site-packages/jupyterlab_templates/templates/jupyterlab_templates/a-sparker.ipynb
+COPY grapher.ipynb /usr/local/lib/python3.12/site-packages/jupyterlab_templates/templates/jupyterlab_templates/b-grapher.ipynb
 COPY jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
 
 EXPOSE 8888
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+RUN mkdir -p /datalake
+RUN mkdir -p /fonts
+VOLUME /datalake
+VOLUME /fonts
 
 # Keep the CMD the same (shell form)
 ENTRYPOINT ["/entrypoint.sh"]
